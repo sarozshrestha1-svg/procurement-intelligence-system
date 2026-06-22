@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createTender } from "@/lib/supabase";
+import { createTender, slugify, uploadTenderDocument } from "@/lib/supabase";
 import { TenderInput } from "@/lib/types";
 
 export async function publishTender(formData: FormData) {
@@ -19,13 +19,20 @@ export async function publishTender(formData: FormData) {
   const description = String(formData.get("description") ?? "");
   const contact_email = nullableString(formData.get("contact_email"));
   const contact_phone = nullableString(formData.get("contact_phone"));
-  const document_url = nullableString(formData.get("document_url"));
+  const external_document_url = nullableString(formData.get("document_url"));
+  const document_file = formData.get("document_file");
   const budget = nullableNumber(formData.get("budget"));
   const bid_fee = nullableNumber(formData.get("bid_fee"));
 
   if (!title || !organization || !category || !procurement_type || !province || !deadline || !summary) {
     throw new Error("Please fill the required tender fields.");
   }
+
+  const slug = slugify(title);
+  const uploadedDocumentUrl =
+    document_file instanceof File && document_file.size > 0
+      ? await uploadTenderDocument(document_file, slug)
+      : null;
 
   const tender = await createTender({
     title,
@@ -43,7 +50,7 @@ export async function publishTender(formData: FormData) {
     description,
     contact_email,
     contact_phone,
-    document_url
+    document_url: uploadedDocumentUrl ?? external_document_url
   });
 
   revalidatePath("/");

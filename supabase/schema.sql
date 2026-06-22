@@ -1,5 +1,17 @@
 create extension if not exists "pgcrypto";
 
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('bid-documents', 'bid-documents', true, 10485760, array['application/pdf'])
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Anyone can read bid documents" on storage.objects;
+create policy "Anyone can read bid documents"
+  on storage.objects for select
+  using (bucket_id = 'bid-documents');
+
 create table if not exists public.tenders (
   id uuid primary key default gen_random_uuid(),
   title text not null,

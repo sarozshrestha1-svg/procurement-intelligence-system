@@ -76,7 +76,7 @@ export default async function TenderDetail({ params }: { params: { slug: string 
             {tender.document_url ? (
               <a className="primary-button" href={tender.document_url} target="_blank" rel="noreferrer">
                 <Download size={16} />
-                Open bid document
+                View bid document
               </a>
             ) : (
               <p className="prose">Document link has not been attached by the publisher.</p>

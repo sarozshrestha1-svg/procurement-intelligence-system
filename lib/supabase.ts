@@ -84,6 +84,44 @@ export async function createTender(input: TenderInput) {
   return data as Tender;
 }
 
+export async function uploadTenderDocument(file: File, slug: string) {
+  if (!adminClient) {
+    throw new Error("Supabase service role key is required to upload bid documents.");
+  }
+
+  if (file.type !== "application/pdf") {
+    throw new Error("Only PDF bid documents can be uploaded.");
+  }
+
+  const maxSize = 10 * 1024 * 1024;
+  if (file.size > maxSize) {
+    throw new Error("PDF must be 10 MB or smaller.");
+  }
+
+  const extension = file.name.split(".").pop() || "pdf";
+  const safeName = file.name
+    .replace(/\.[^/.]+$/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+  const path = `${slug}/${Date.now()}-${safeName || "bid-document"}.${extension}`;
+  const bytes = await file.arrayBuffer();
+
+  const { error } = await adminClient.storage
+    .from("bid-documents")
+    .upload(path, bytes, {
+      contentType: "application/pdf",
+      upsert: false
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  const { data } = adminClient.storage.from("bid-documents").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 export function getStatus(deadline: string) {
   const now = new Date();
   const close = new Date(deadline);

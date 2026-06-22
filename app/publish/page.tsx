@@ -43,9 +43,13 @@ export default function PublishPage() {
               <Field name="deadline" label="Submission deadline" type="date" required />
               <Field name="budget" label="Estimated budget" type="number" placeholder="25000000" />
               <Field name="bid_fee" label="Bid document fee" type="number" placeholder="3000" />
-              <Field name="document_url" label="Document URL" placeholder="https://..." />
+              <Field name="document_url" label="External document URL" placeholder="https://... optional fallback" />
               <Field name="contact_email" label="Contact email" type="email" placeholder="procurement@example.com" />
               <Field name="contact_phone" label="Contact phone" placeholder="+977..." />
+            </div>
+            <div className="field">
+              <label htmlFor="document_file">Upload bid document PDF</label>
+              <input id="document_file" name="document_file" type="file" accept="application/pdf" />
             </div>
             <Field name="summary" label="Short summary" placeholder="One or two lines suppliers can scan quickly" required />
             <div className="field">
