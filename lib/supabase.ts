@@ -98,20 +98,14 @@ export async function uploadTenderDocument(file: File, slug: string) {
     throw new Error("PDF must be 10 MB or smaller.");
   }
 
-  const extension = file.name.split(".").pop() || "pdf";
-  const safeName = file.name
-    .replace(/\.[^/.]+$/, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
-  const path = `${slug}/${Date.now()}-${safeName || "bid-document"}.${extension}`;
+  const path = `${slug}/bid-document.pdf`;
   const bytes = await file.arrayBuffer();
 
   const { error } = await adminClient.storage
     .from("bid-documents")
     .upload(path, bytes, {
       contentType: "application/pdf",
-      upsert: false
+      upsert: true
     });
 
   if (error) {
