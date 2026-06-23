@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { ArrowLeft, CalendarClock, Download, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, CalendarClock, Download, Mail, MapPin, Phone, Tag } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { formatMoney, getTenderBySlug } from "@/lib/supabase";
 
@@ -13,24 +13,29 @@ export default async function TenderDetail({ params }: { params: { slug: string 
   }
 
   return (
-    <main className="shell">
+    <main className="shell portal-shell">
       <AppHeader />
-      <section className="container detail">
-        <article className="detail-main">
-          <Link className="ghost-button" href="/#tenders">
+      <section className="portal-detail-hero">
+        <div className="container">
+          <Link className="portal-back-link" href="/#tenders">
             <ArrowLeft size={16} />
             Back to notices
           </Link>
-          <div className="meta-row" style={{ marginTop: 18 }}>
-            <span className={tender.status === "closing_soon" ? "pill urgent" : "pill live"}>
+          <div className="portal-detail-kicker">
+            <span>
               <CalendarClock size={13} />
               {tender.status === "closing_soon" ? "Closing soon" : tender.status}
             </span>
-            <span className="pill">{tender.category}</span>
-            <span className="pill">{tender.procurement_type}</span>
+            <span>{tender.category}</span>
+            <span>{tender.procurement_type}</span>
           </div>
           <h1>{tender.title}</h1>
-          <p className="lead">{tender.organization}</p>
+          <p>{tender.organization}</p>
+        </div>
+      </section>
+
+      <section className="container portal-detail">
+        <article className="portal-detail-main">
           <div className="info-grid">
             <Info label="Deadline" value={format(new Date(tender.deadline), "MMMM d, yyyy")} />
             <Info label="Published" value={format(new Date(tender.published_at), "MMMM d, yyyy")} />
@@ -39,7 +44,7 @@ export default async function TenderDetail({ params }: { params: { slug: string 
             <Info label="Location" value={`${tender.district ? `${tender.district}, ` : ""}${tender.province}`} />
             <Info label="Source" value={tender.source} />
           </div>
-          <div className="prose">
+          <div className="portal-prose">
             <h2>Notice summary</h2>
             <p>{tender.summary}</p>
             <h2>Details</h2>
@@ -47,8 +52,8 @@ export default async function TenderDetail({ params }: { params: { slug: string 
           </div>
         </article>
 
-        <aside className="side-panel">
-          <div className="panel">
+        <aside className="portal-detail-side">
+          <div className="portal-side-panel">
             <h3>Contact</h3>
             <ul className="panel-list">
               <li>
@@ -71,16 +76,24 @@ export default async function TenderDetail({ params }: { params: { slug: string 
               </li>
             </ul>
           </div>
-          <div className="panel">
+          <div className="portal-side-panel document-panel">
             <h3>Documents</h3>
             {tender.document_url ? (
-              <a className="primary-button" href={tender.document_url} target="_blank" rel="noreferrer">
+              <a className="portal-document-button" href={tender.document_url} target="_blank" rel="noreferrer">
                 <Download size={16} />
                 View bid document
               </a>
             ) : (
-              <p className="prose">Document link has not been attached by the publisher.</p>
+              <p className="portal-prose">Document link has not been attached by the publisher.</p>
             )}
+          </div>
+          <div className="portal-side-panel">
+            <h3>Opportunity tags</h3>
+            <div className="detail-tags">
+              <span><Tag size={14} /> {tender.category}</span>
+              <span><Tag size={14} /> {tender.procurement_type}</span>
+              <span><Tag size={14} /> {tender.district || tender.province}</span>
+            </div>
           </div>
         </aside>
       </section>

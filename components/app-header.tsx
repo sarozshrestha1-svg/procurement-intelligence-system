@@ -15,8 +15,7 @@ export function AppHeader() {
         </Link>
         <nav className="nav" aria-label="Primary navigation">
           <Link className="active" href="/">Home</Link>
-          <Link href="/#community">Community</Link>
-          <Link href="/#bazar">Bazar</Link>
+          <Link href="/rent-machine">Rent machine</Link>
           <Link href="/#pricing">Pricing</Link>
         </nav>
         <div className="header-actions">
