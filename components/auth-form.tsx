@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Lock, Phone, UserRound } from "lucide-react";
@@ -28,6 +28,18 @@ export function AuthForm({ mode }: { mode: Mode }) {
     return createClient(supabaseUrl, supabaseAnonKey);
   }, []);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const phoneFromSignup = searchParams.get("phone");
+    if (phoneFromSignup) {
+      setPhone(phoneFromSignup);
+    }
+
+    if (mode === "login" && searchParams.get("created") === "1") {
+      setMessage("Account created. Please log in with the password you just made.");
+    }
+  }, [mode]);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
@@ -52,7 +64,9 @@ export function AuthForm({ mode }: { mode: Mode }) {
           throw new Error(result.error || "Could not create account.");
         }
 
-        email = result.email;
+        router.push(`/login?created=1&phone=${encodeURIComponent(phone)}`);
+        router.refresh();
+        return;
       }
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -60,7 +74,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         throw new Error(error.message);
       }
 
-      router.push("/account");
+      router.push("/");
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
