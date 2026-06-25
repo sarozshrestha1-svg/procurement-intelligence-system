@@ -19,11 +19,11 @@ export function AppHeader() {
           <Link href="/#pricing">Pricing</Link>
         </nav>
         <div className="header-actions">
-          <Link className="login-button" href="/#login">Log in</Link>
-          <Link className="get-started-button" href="/publish">Get started</Link>
+          <Link className="login-button" href="/login">Log in</Link>
+          <Link className="get-started-button" href="/signup">Sign up</Link>
         </div>
         <nav className="mobile-nav" aria-label="Mobile navigation">
-          <Link href="/publish">Get started</Link>
+          <Link href="/signup">Sign up</Link>
         </nav>
       </div>
     </header>
