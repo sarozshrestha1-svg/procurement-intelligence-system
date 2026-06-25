@@ -828,14 +828,21 @@ h1 {
 }
 
 .login-button,
-.get-started-button {
+.get-started-button,
+.profile-button {
   display: inline-flex;
   min-width: 114px;
   min-height: 49px;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   border-radius: 6px;
+  padding: 0 16px;
   font-size: 19px;
+}
+
+.header-actions button {
+  cursor: pointer;
 }
 
 .login-button {
@@ -848,6 +855,20 @@ h1 {
   border: 1px solid var(--portal-blue);
   color: #fff;
   background: var(--portal-blue);
+}
+
+.profile-button {
+  max-width: 260px;
+  border: 1px solid rgba(7, 92, 175, 0.22);
+  color: var(--portal-blue);
+  background: #f6fbff;
+  font-weight: 800;
+}
+
+.profile-button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mobile-nav {
